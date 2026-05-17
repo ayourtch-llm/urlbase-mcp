@@ -14,34 +14,96 @@ and exposes RAG search as MCP tools.
 
 ## Install
 
-Requires Python 3.10+.
+Requires Python 3.10+. This project is not on PyPI — install it from a clone.
 
 ```bash
-# from a clone:
+git clone https://github.com/ayourtch-llm/urlbase-mcp.git
+cd urlbase-mcp
+
+# install into the current environment:
 pip install .
 
-# or with uv / uvx (recommended once published):
-uvx urlbase-mcp
+# or into an isolated environment with pipx:
+pipx install .
+
+# or run without installing, using uv:
+uv run --with . urlbase-mcp
 ```
 
-## Run
-
-```bash
-urlbase-mcp
-```
+After `pip install .` / `pipx install .`, an `urlbase-mcp` executable is on
+your `PATH`. Note its absolute location (`which urlbase-mcp`) — you will need
+it for the client configs below.
 
 It speaks MCP over stdio. On first start it will download the embedding model
 (~130 MB) into `~/.cache/`.
 
 ## MCP client configuration
 
-Claude Desktop / other MCP clients:
+### Claude Code
+
+Use the `claude mcp add` command, pointing at the installed binary (replace
+the path with your own `which urlbase-mcp` output):
+
+```bash
+claude mcp add urlbase /absolute/path/to/urlbase-mcp
+```
+
+Add `--scope user` to make it available across all projects, or `--scope
+project` to commit it to `.mcp.json` for the current repo.
+
+To run straight from a clone without installing, point at `uv` instead:
+
+```bash
+claude mcp add urlbase -- uv --directory /absolute/path/to/urlbase-mcp run urlbase-mcp
+```
+
+Equivalent JSON (e.g. `.mcp.json` in a project, or `~/.claude.json`):
 
 ```json
 {
   "mcpServers": {
     "urlbase": {
-      "command": "urlbase-mcp"
+      "command": "/absolute/path/to/urlbase-mcp"
+    }
+  }
+}
+```
+
+### OpenClaw
+
+[OpenClaw](https://openclaw.ai/) manages MCP servers via its `openclaw mcp`
+subcommands. Register the server with `openclaw mcp set`, passing the stdio
+config as a JSON blob:
+
+```bash
+openclaw mcp set urlbase '{"command":"/absolute/path/to/urlbase-mcp"}'
+```
+
+To run straight from a clone without installing:
+
+```bash
+openclaw mcp set urlbase '{"command":"uv","args":["--directory","/absolute/path/to/urlbase-mcp","run","urlbase-mcp"]}'
+```
+
+Useful companion commands:
+
+```bash
+openclaw mcp list             # show all configured servers
+openclaw mcp show urlbase     # inspect this one
+openclaw mcp unset urlbase    # remove it
+```
+
+The blob accepts the usual stdio fields: `command` (required), `args`, `env`,
+and `cwd` / `workingDirectory`. Under the hood OpenClaw stores the entry under
+`mcp.servers.urlbase` in its config.
+
+### Claude Desktop / other stdio MCP clients
+
+```json
+{
+  "mcpServers": {
+    "urlbase": {
+      "command": "/absolute/path/to/urlbase-mcp"
     }
   }
 }
