@@ -3,6 +3,9 @@
 An MCP server that fetches HTTP(S) documents, chunks and embeds them locally,
 and exposes RAG search as MCP tools.
 
+> **New here?** Start with the [User Guide](GUIDE.md) for a friendly
+> walkthrough. This README is the technical reference.
+
 - Local embeddings via [`fastembed`](https://github.com/qdrant/fastembed) (ONNX, no PyTorch)
 - Storage in a single SQLite file (with [`sqlite-vec`](https://github.com/asg017/sqlite-vec) for vector search)
 - HTML article extraction via `trafilatura`, PDF via `pypdf`
