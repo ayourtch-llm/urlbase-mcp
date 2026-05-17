@@ -101,7 +101,7 @@ def fetch_url(
     extract_mode: str = "article",
     etag: Optional[str] = None,
     last_modified: Optional[str] = None,
-    user_agent: str = "rag-mcp/0.1",
+    user_agent: str = "urlbase-mcp/0.1",
     timeout: int = 30,
     max_bytes: int = 20_000_000,
 ) -> FetchResult:

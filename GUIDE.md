@@ -1,6 +1,6 @@
-# rag-mcp User Guide
+# urlbase-mcp User Guide
 
-A friendly walkthrough of what `rag-mcp` does, how to set it up, and how to
+A friendly walkthrough of what `urlbase-mcp` does, how to set it up, and how to
 actually *use* it day-to-day from Claude or another MCP client.
 
 > **Quick mental model:** you give it a list of web pages and PDFs you care
@@ -31,7 +31,7 @@ You probably have a collection of pages you'd love your AI assistant to "just
 know about": a few RFCs, a vendor's API docs, a long-form blog series you keep
 re-reading, the PDFs of papers you've been meaning to understand.
 
-`rag-mcp` lets you point at those URLs once and then ask questions like:
+`urlbase-mcp` lets you point at those URLs once and then ask questions like:
 
 - *"What does the authentication section of the Stripe API doc say about webhook signatures?"*
 - *"Compare what the FastAPI and Flask docs say about background tasks."*
@@ -55,18 +55,18 @@ You need Python 3.10 or newer. Install [`uv`](https://github.com/astral-sh/uv)
 first if you don't have it — it's the easiest way.
 
 ```bash
-git clone <this repo> rag-mcp
-cd rag-mcp
+git clone <this repo> urlbase-mcp
+cd urlbase-mcp
 uv venv --python 3.12 .venv
 uv pip install --python .venv/bin/python -e .
 ```
 
-That gives you a `rag-mcp` command inside `.venv/bin/`.
+That gives you a `urlbase-mcp` command inside `.venv/bin/`.
 
 ### First run
 
 ```bash
-.venv/bin/rag-mcp
+.venv/bin/urlbase-mcp
 ```
 
 On the very first run it will download two small models (~220 MB total) into
@@ -89,13 +89,13 @@ Edit your Claude Desktop config:
 - **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
 - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
-Add an `mcpServers` entry pointing at the `rag-mcp` binary:
+Add an `mcpServers` entry pointing at the `urlbase-mcp` binary:
 
 ```json
 {
   "mcpServers": {
-    "rag": {
-      "command": "/Users/YOU/rag-mcp/.venv/bin/rag-mcp"
+    "urlbase": {
+      "command": "/Users/YOU/urlbase-mcp/.venv/bin/urlbase-mcp"
     }
   }
 }
@@ -110,11 +110,11 @@ add an `env` block:
 ```json
 {
   "mcpServers": {
-    "rag": {
-      "command": "/Users/YOU/rag-mcp/.venv/bin/rag-mcp",
+    "urlbase": {
+      "command": "/Users/YOU/urlbase-mcp/.venv/bin/urlbase-mcp",
       "env": {
-        "RAG_DB_PATH": "/Users/YOU/Documents/rag.db",
-        "RAG_REFRESH_INTERVAL_HOURS": "12"
+        "URLBASE_DB_PATH": "/Users/YOU/Documents/urlbase.db",
+        "URLBASE_REFRESH_INTERVAL_HOURS": "12"
       }
     }
   }
@@ -203,7 +203,7 @@ queries and avoids cross-talk between unrelated subjects.
   content you care about (sometimes happens on docs sites with unusual layouts,
   comment threads, or reference tables).
 
-Set globally via `RAG_EXTRACT_MODE`, or per-URL when you call `add_url`:
+Set globally via `URLBASE_EXTRACT_MODE`, or per-URL when you call `add_url`:
 
 > *"Add https://weird-docs.example.com using full extract mode."*
 
@@ -229,23 +229,23 @@ you need.
 
 | Variable | Default | What it does |
 | --- | --- | --- |
-| `RAG_DB_PATH` | `~/.local/share/rag-mcp/rag.db` | Where the SQLite file lives. Move this to back up or share. |
-| `RAG_EXTRACT_MODE` | `article` | Default HTML extraction: `article` (clean) or `full` (more). |
-| `RAG_REFRESH_INTERVAL_HOURS` | `24` | Background refresh period. `0` disables it. |
-| `RAG_REFRESH_JITTER_MIN` | `30` | Random extra minutes per cycle so servers don't get a thundering herd. |
-| `RAG_CHUNK_CHARS` | `2400` | Target chunk size. Bigger = more context per hit, fewer total hits. |
-| `RAG_CHUNK_OVERLAP` | `320` | Char overlap between adjacent chunks. |
-| `RAG_FETCH_TIMEOUT` | `30` | Seconds before giving up on a slow server. |
-| `RAG_MAX_BYTES` | `20000000` | Reject documents larger than ~20 MB. |
-| `RAG_EMBED_MODEL` | `BAAI/bge-small-en-v1.5` | Change at your peril (see below). |
-| `RAG_RERANKER_MODEL` | `Xenova/ms-marco-MiniLM-L-6-v2` | Cross-encoder used to re-score top hits. |
-| `RAG_RERANK` | `1` | Set to `0` to skip reranking (faster, slightly worse). |
-| `RAG_USER_AGENT` | `rag-mcp/0.1 …` | Sent to remote servers. Customise for politeness. |
-| `RAG_LOG_LEVEL` | `INFO` | `DEBUG` if you're hunting a problem. |
+| `URLBASE_DB_PATH` | `~/.local/share/urlbase-mcp/urlbase.db` | Where the SQLite file lives. Move this to back up or share. |
+| `URLBASE_EXTRACT_MODE` | `article` | Default HTML extraction: `article` (clean) or `full` (more). |
+| `URLBASE_REFRESH_INTERVAL_HOURS` | `24` | Background refresh period. `0` disables it. |
+| `URLBASE_REFRESH_JITTER_MIN` | `30` | Random extra minutes per cycle so servers don't get a thundering herd. |
+| `URLBASE_CHUNK_CHARS` | `2400` | Target chunk size. Bigger = more context per hit, fewer total hits. |
+| `URLBASE_CHUNK_OVERLAP` | `320` | Char overlap between adjacent chunks. |
+| `URLBASE_FETCH_TIMEOUT` | `30` | Seconds before giving up on a slow server. |
+| `URLBASE_MAX_BYTES` | `20000000` | Reject documents larger than ~20 MB. |
+| `URLBASE_EMBED_MODEL` | `BAAI/bge-small-en-v1.5` | Change at your peril (see below). |
+| `URLBASE_RERANKER_MODEL` | `Xenova/ms-marco-MiniLM-L-6-v2` | Cross-encoder used to re-score top hits. |
+| `URLBASE_RERANK` | `1` | Set to `0` to skip reranking (faster, slightly worse). |
+| `URLBASE_USER_AGENT` | `urlbase-mcp/0.1 …` | Sent to remote servers. Customise for politeness. |
+| `URLBASE_LOG_LEVEL` | `INFO` | `DEBUG` if you're hunting a problem. |
 
 ### Changing the embedding model
 The dimension is baked into the database when you first index something.
-If you change `RAG_EMBED_MODEL` to a model with a different dimension, the
+If you change `URLBASE_EMBED_MODEL` to a model with a different dimension, the
 server will refuse to start and tell you so. Fix: either change it back, or
 delete the DB file and re-ingest.
 
@@ -274,7 +274,7 @@ page probably has no static text content.
 
 ### "Refresh keeps failing for one URL"
 The remote server may be rate-limiting, requiring a real browser UA, or down.
-Check `RAG_USER_AGENT` and try a manual `refresh` from Claude to see the
+Check `URLBASE_USER_AGENT` and try a manual `refresh` from Claude to see the
 error message.
 
 ### "I added the same URL twice"
@@ -294,7 +294,7 @@ chunks ≈ 15 MB. If it's much bigger, look at oversized documents:
 Only the HTTP requests to fetch your URLs. Embedding and search are 100% local.
 
 **Can I use a different embedding model?**
-Yes — set `RAG_EMBED_MODEL` to any model name supported by
+Yes — set `URLBASE_EMBED_MODEL` to any model name supported by
 [`fastembed`](https://qdrant.github.io/fastembed/examples/Supported_Models/).
 Multilingual? Try `intfloat/multilingual-e5-base`. Just remember the
 dimension lock-in.
@@ -311,7 +311,7 @@ The embedding model has to match on both ends.
 Not supported. By design — this is a public-URL tool.
 
 **How do I uninstall?**
-Remove the venv and the database directory (`~/.local/share/rag-mcp/`
+Remove the venv and the database directory (`~/.local/share/urlbase-mcp/`
 by default). The model cache lives in `~/.cache/huggingface/` and
 `~/.cache/fastembed/`.
 

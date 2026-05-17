@@ -14,11 +14,11 @@ from .config import Config
 from .embed import Embedder
 from .refresh import RefreshThread
 
-logger = logging.getLogger("rag_mcp")
+logger = logging.getLogger("urlbase_mcp")
 
 
 def _setup_logging() -> None:
-    level = os.environ.get("RAG_LOG_LEVEL", "INFO").upper()
+    level = os.environ.get("URLBASE_LOG_LEVEL", "INFO").upper()
     logging.basicConfig(
         level=getattr(logging, level, logging.INFO),
         format="%(asctime)s %(name)s %(levelname)s %(message)s",
@@ -53,7 +53,7 @@ def build_server(cfg: Config) -> FastMCP:
     dim = embedder.dimension
     db.init_db(cfg.db_path, dim)
     logger.info(
-        "rag-mcp ready: db=%s embed_model=%s dim=%d rerank=%s",
+        "urlbase-mcp ready: db=%s embed_model=%s dim=%d rerank=%s",
         cfg.db_path,
         cfg.embed_model,
         dim,
@@ -63,7 +63,7 @@ def build_server(cfg: Config) -> FastMCP:
     refresher = RefreshThread(cfg, embedder)
     refresher.start()
 
-    mcp = FastMCP("rag-mcp")
+    mcp = FastMCP("urlbase-mcp")
 
     @mcp.tool()
     async def add_url(

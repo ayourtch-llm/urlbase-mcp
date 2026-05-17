@@ -10,7 +10,7 @@ from . import db, pipeline
 from .config import Config
 from .embed import Embedder
 
-logger = logging.getLogger("rag_mcp.refresh")
+logger = logging.getLogger("urlbase_mcp.refresh")
 
 
 class RefreshThread:
@@ -22,7 +22,7 @@ class RefreshThread:
 
     def start(self) -> None:
         if self.cfg.refresh_interval_hours <= 0:
-            logger.info("refresh disabled (RAG_REFRESH_INTERVAL_HOURS=0)")
+            logger.info("refresh disabled (URLBASE_REFRESH_INTERVAL_HOURS=0)")
             return
         if self._thread is not None:
             return

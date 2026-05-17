@@ -88,7 +88,7 @@ def init_db(db_path: Path, embed_dim: int) -> None:
             raise RuntimeError(
                 f"Embedding dimension mismatch: DB was built with {existing}-dim "
                 f"vectors, but configured model produces {embed_dim}-dim. "
-                f"Either change RAG_EMBED_MODEL back, or delete {db_path} to start fresh."
+                f"Either change URLBASE_EMBED_MODEL back, or delete {db_path} to start fresh."
             )
 
     conn.execute(

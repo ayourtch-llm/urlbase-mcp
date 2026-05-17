@@ -1,4 +1,4 @@
-# rag-mcp
+# urlbase-mcp
 
 An MCP server that fetches HTTP(S) documents, chunks and embeds them locally,
 and exposes RAG search as MCP tools.
@@ -21,13 +21,13 @@ Requires Python 3.10+.
 pip install .
 
 # or with uv / uvx (recommended once published):
-uvx rag-mcp
+uvx urlbase-mcp
 ```
 
 ## Run
 
 ```bash
-rag-mcp
+urlbase-mcp
 ```
 
 It speaks MCP over stdio. On first start it will download the embedding model
@@ -40,8 +40,8 @@ Claude Desktop / other MCP clients:
 ```json
 {
   "mcpServers": {
-    "rag": {
-      "command": "rag-mcp"
+    "urlbase": {
+      "command": "urlbase-mcp"
     }
   }
 }
@@ -51,19 +51,19 @@ Claude Desktop / other MCP clients:
 
 | Var | Default | Notes |
 | --- | --- | --- |
-| `RAG_DB_PATH` | `~/.local/share/rag-mcp/rag.db` | SQLite file path |
-| `RAG_EMBED_MODEL` | `BAAI/bge-small-en-v1.5` | Any fastembed-supported model |
-| `RAG_RERANKER_MODEL` | `Xenova/ms-marco-MiniLM-L-6-v2` | Cross-encoder reranker |
-| `RAG_RERANK` | `1` | `0`/`false` to disable rerank |
-| `RAG_REFRESH_INTERVAL_HOURS` | `24` | `0` disables background refresh |
-| `RAG_REFRESH_JITTER_MIN` | `30` | Random extra minutes per cycle |
-| `RAG_CHUNK_CHARS` | `2400` | Target chunk size in characters |
-| `RAG_CHUNK_OVERLAP` | `320` | Char overlap between chunks |
-| `RAG_FETCH_TIMEOUT` | `30` | HTTP timeout (seconds) |
-| `RAG_MAX_BYTES` | `20000000` | Reject responses larger than this |
-| `RAG_EXTRACT_MODE` | `article` | Default HTML extraction mode: `article` or `full` |
-| `RAG_USER_AGENT` | `rag-mcp/0.1` | Sent to remote servers |
-| `RAG_LOG_LEVEL` | `INFO` | Standard Python levels |
+| `URLBASE_DB_PATH` | `~/.local/share/urlbase-mcp/urlbase.db` | SQLite file path |
+| `URLBASE_EMBED_MODEL` | `BAAI/bge-small-en-v1.5` | Any fastembed-supported model |
+| `URLBASE_RERANKER_MODEL` | `Xenova/ms-marco-MiniLM-L-6-v2` | Cross-encoder reranker |
+| `URLBASE_RERANK` | `1` | `0`/`false` to disable rerank |
+| `URLBASE_REFRESH_INTERVAL_HOURS` | `24` | `0` disables background refresh |
+| `URLBASE_REFRESH_JITTER_MIN` | `30` | Random extra minutes per cycle |
+| `URLBASE_CHUNK_CHARS` | `2400` | Target chunk size in characters |
+| `URLBASE_CHUNK_OVERLAP` | `320` | Char overlap between chunks |
+| `URLBASE_FETCH_TIMEOUT` | `30` | HTTP timeout (seconds) |
+| `URLBASE_MAX_BYTES` | `20000000` | Reject responses larger than this |
+| `URLBASE_EXTRACT_MODE` | `article` | Default HTML extraction mode: `article` or `full` |
+| `URLBASE_USER_AGENT` | `urlbase-mcp/0.1` | Sent to remote servers |
+| `URLBASE_LOG_LEVEL` | `INFO` | Standard Python levels |
 
 ## Tools
 
@@ -78,7 +78,7 @@ Claude Desktop / other MCP clients:
 
 ## Notes
 
-- Changing `RAG_EMBED_MODEL` after some data is indexed is an error if the
+- Changing `URLBASE_EMBED_MODEL` after some data is indexed is an error if the
   dimension differs. Delete the DB to start fresh.
 - The refresh thread also recomputes embeddings on content changes, so swapping
   a remote document for a new version is picked up automatically.
